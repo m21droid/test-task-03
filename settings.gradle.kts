@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "booknet"
 include(":app")
- 
+include(":domain")
+include(":data")
