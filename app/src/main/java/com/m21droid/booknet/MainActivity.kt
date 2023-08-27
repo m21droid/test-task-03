@@ -1,46 +1,60 @@
 package com.m21droid.booknet
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.m21droid.booknet.ui.theme.BooknetTheme
+import android.view.View
+import android.view.View.OnClickListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.Navigation.findNavController
+import com.m21droid.booknet.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : ComponentActivity() {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity(), OnClickListener {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            BooknetTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
+        logD("onCreate: ")
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.apply {
+            textViewMainRead.setOnClickListener(this@MainActivity)
+            textViewMainArchive.setOnClickListener(this@MainActivity)
+            textViewMainFavorite.setOnClickListener(this@MainActivity)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        navController = findNavController(binding.fragmentContainerViewMain)
+    }
+
+    override fun onClick(v: View?) {
+        logD("onClick: view - $v")
+
+        binding.apply {
+            when (v) {
+                textViewMainRead -> {
+                    navController.navigateUp()
+                    navController.navigate(R.id.firstMainFragment)
+                }
+
+                textViewMainArchive -> {
+                    navController.navigateUp()
+                    navController.navigate(R.id.secondMainFragment)
+                }
+
+                textViewMainFavorite -> {
+                    navController.navigateUp()
+                    navController.navigate(R.id.thirdMainFragment)
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BooknetTheme {
-        Greeting("Android")
-    }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.m21droid.booknet.domain.models.BookModel
 import com.m21droid.booknet.domain.models.ResponseState
 import com.m21droid.booknet.domain.usecases.GetAllBooksUseCase
+import com.m21droid.booknet.logD
 import com.m21droid.booknet.presentation.main.states.MainState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +23,12 @@ class MainViewModel @Inject constructor(
     val liveDataFavorite = MutableLiveData<MainState>(MainState.Empty)
 
     init {
+        logD("init: ")
+
         getAllBooks()
     }
 
-    fun getAllBooks() {
+    private fun getAllBooks() {
         viewModelScope.launch(Dispatchers.IO) {
             getAllBooksUseCase.execute(Unit).collect {
                 when (it) {
@@ -52,12 +55,20 @@ class MainViewModel @Inject constructor(
                                 2 -> listBookFavorite.add(book)
                             }
                         }
-                        liveDataRead.postValue(MainState.Display(listBookRead))
-                        liveDataArchive.postValue(MainState.Display(listBookArchive))
-                        liveDataFavorite.postValue(MainState.Display(listBookFavorite))
+                        liveDataRead.postState(listBookRead)
+                        liveDataArchive.postState(listBookArchive)
+                        liveDataFavorite.postState(listBookFavorite)
                     }
                 }
             }
+        }
+    }
+
+    private fun MutableLiveData<MainState>.postState(data: MutableList<BookModel>) {
+        if (data.isEmpty()) {
+            postValue(MainState.Empty)
+        } else {
+            postValue(MainState.Display(data))
         }
     }
 

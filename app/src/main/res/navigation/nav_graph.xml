@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/firstMainFragment">
+
+    <fragment
+        android:id="@+id/firstMainFragment"
+        android:name="com.m21droid.booknet.presentation.main.screens.FirstMainFragment"
+        android:label="FirstMainFragment"
+        tools:layout="@layout/fragment_main" />
+
+    <fragment
+        android:id="@+id/secondMainFragment"
+        android:name="com.m21droid.booknet.presentation.main.screens.SecondMainFragment"
+        android:label="SecondMainFragment"
+        tools:layout="@layout/fragment_main" />
+
+    <fragment
+        android:id="@+id/thirdMainFragment"
+        android:name="com.m21droid.booknet.presentation.main.screens.ThirdMainFragment"
+        android:label="ThirdMainFragment"
+        tools:layout="@layout/fragment_main" />
+
+</navigation>

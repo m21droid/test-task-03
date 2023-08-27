@@ -1,3 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">booknet</string>
+
+    <string name="empty">Немає книг</string>
+    <string name="error">Error</string>
+
+    <string name="tab_read">Read</string>
+    <string name="tab_archive">Archive</string>
+    <string name="tab_favorite">Favorite</string>
+
 </resources>
