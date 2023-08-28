@@ -7,22 +7,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.m21droid.booknet.R
 import com.m21droid.booknet.databinding.FragmentMainBinding
 import com.m21droid.booknet.domain.models.BookModel
 import com.m21droid.booknet.gone
 import com.m21droid.booknet.init
 import com.m21droid.booknet.logD
+import com.m21droid.booknet.presentation.MainViewModel
 import com.m21droid.booknet.presentation.base.BaseHolder.OnItemClickListener
 import com.m21droid.booknet.presentation.base.BaseSpace
-import com.m21droid.booknet.presentation.main.MainViewModel
 import com.m21droid.booknet.presentation.main.adapters.BookAdapter
 import com.m21droid.booknet.presentation.main.states.MainState
 import com.m21droid.booknet.visible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-open class MainFragment : Fragment(), Observer<MainState>, OnItemClickListener<BookModel> {
+abstract class MainFragment : Fragment(), Observer<MainState>, OnItemClickListener<BookModel> {
 
     protected val viewModel by activityViewModels<MainViewModel>()
 
@@ -63,7 +64,7 @@ open class MainFragment : Fragment(), Observer<MainState>, OnItemClickListener<B
                     recyclerViewMain.gone()
                     textViewMainError.visible()
                     progressBarMain.gone()
-                    textViewMainError.text = getString(R.string.empty)
+                    textViewMainError.text = getString(R.string.empty_book)
                 }
 
                 is MainState.Display -> {
@@ -78,7 +79,12 @@ open class MainFragment : Fragment(), Observer<MainState>, OnItemClickListener<B
     }
 
     override fun onItemViewClick(view: View, model: BookModel) {
+        logD("onItemViewClick: model - $model")
 
+        viewModel.getBook(model.id)
+        findNavController().navigate(getActionId())
     }
+
+    abstract fun getActionId(): Int
 
 }

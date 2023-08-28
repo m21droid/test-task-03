@@ -3,7 +3,8 @@
 
     <string name="app_name">booknet</string>
 
-    <string name="empty">Немає книг</string>
+    <string name="empty_book">Немає книг</string>
+    <string name="empty_page">Немає сторінок</string>
     <string name="error">Error</string>
 
     <string name="tab_read">Read</string>

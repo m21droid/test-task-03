@@ -1,4 +1,4 @@
-package com.m21droid.booknet
+package com.m21droid.booknet.presentation
 
 import android.os.Bundle
 import android.view.View
@@ -6,7 +6,9 @@ import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
+import com.m21droid.booknet.R
 import com.m21droid.booknet.databinding.ActivityMainBinding
+import com.m21droid.booknet.logD
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

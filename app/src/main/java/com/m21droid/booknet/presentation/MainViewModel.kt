@@ -1,4 +1,4 @@
-package com.m21droid.booknet.presentation.main
+package com.m21droid.booknet.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.m21droid.booknet.domain.models.BookModel
 import com.m21droid.booknet.domain.models.ResponseState
 import com.m21droid.booknet.domain.usecases.GetAllBooksUseCase
+import com.m21droid.booknet.domain.usecases.GetBookUseCase
 import com.m21droid.booknet.logD
+import com.m21droid.booknet.presentation.book.states.BookState
 import com.m21droid.booknet.presentation.main.states.MainState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +18,14 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getAllBooksUseCase: GetAllBooksUseCase,
+    private val getBookUseCase: GetBookUseCase,
 ) : ViewModel() {
 
     val liveDataRead = MutableLiveData<MainState>(MainState.Empty)
     val liveDataArchive = MutableLiveData<MainState>(MainState.Empty)
     val liveDataFavorite = MutableLiveData<MainState>(MainState.Empty)
+
+    val liveDataBook = MutableLiveData<BookState>(BookState.Empty)
 
     init {
         logD("init: ")
@@ -69,6 +74,20 @@ class MainViewModel @Inject constructor(
             postValue(MainState.Empty)
         } else {
             postValue(MainState.Display(data))
+        }
+    }
+
+    internal fun getBook(bookId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getBookUseCase.execute(bookId).collect {
+                val bookState = when (it) {
+                    ResponseState.Loading -> BookState.Loading
+                    is ResponseState.Failure -> BookState.Failure
+                    is ResponseState.Success ->
+                        if (it.data.isEmpty()) BookState.Empty else BookState.Display(it.data)
+                }
+                liveDataBook.postValue(bookState)
+            }
         }
     }
 

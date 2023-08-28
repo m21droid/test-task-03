@@ -9,18 +9,36 @@
         android:id="@+id/firstMainFragment"
         android:name="com.m21droid.booknet.presentation.main.screens.FirstMainFragment"
         android:label="FirstMainFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_firstMainFragment_to_bookFragment"
+            app:destination="@id/bookFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/secondMainFragment"
         android:name="com.m21droid.booknet.presentation.main.screens.SecondMainFragment"
         android:label="SecondMainFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_secondMainFragment_to_bookFragment"
+            app:destination="@id/bookFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/thirdMainFragment"
         android:name="com.m21droid.booknet.presentation.main.screens.ThirdMainFragment"
         android:label="ThirdMainFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_thirdMainFragment_to_bookFragment"
+            app:destination="@id/bookFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookFragment"
+        android:name="com.m21droid.booknet.presentation.book.screens.BookFragment"
+        android:label="BookFragment"
+        tools:layout="@layout/fragment_book" />
 
 </navigation>
