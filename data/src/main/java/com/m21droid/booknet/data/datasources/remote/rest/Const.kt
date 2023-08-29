@@ -1,6 +1,7 @@
 package com.m21droid.booknet.data.datasources.remote.rest
 
 import android.util.Base64
+import android.util.Log
 import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -35,20 +36,22 @@ fun String.md5(): String {
     return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
 }
 
-fun String.decrypt(key: String) =
+fun String.decrypt(secret: String) =
     try {
         val charset = StandardCharsets.UTF_16LE
-        val md = MessageDigest.getInstance("MD5")
-        val input = key.toByteArray(charset)
-        val digest = md.digest(input)
+        val key = MessageDigest.getInstance("MD5")
+            .digest(secret.toByteArray(charset))
+        val iv = MessageDigest.getInstance("MD5")
+            .digest(substring(0, 16).toByteArray(charset))
         val cipher = Cipher.getInstance("AES/CBC/NoPadding").apply {
-            val keySpec = SecretKeySpec(digest, "AES")
-            val ivSpec = IvParameterSpec(ByteArray(16))
+            val keySpec = SecretKeySpec(key, "AES")
+            val ivSpec = IvParameterSpec(iv)
             init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
         }
         val encrypted = Base64.decode(toByteArray(charset), Base64.DEFAULT)
         val decrypted = cipher.doFinal(encrypted)
         String(decrypted, charset)
     } catch (e: Exception) {
+        Log.e(Const::class.simpleName, "decrypt: e - $e")
         ""
     }

@@ -49,7 +49,7 @@ class RemoteDataSourceImpl(
         try {
             emit(ResponseState.Loading)
 
-            Log.d(TAG, "getBooks: deviceId - $deviceId")
+            Log.d(TAG, "getBook: deviceId - $deviceId")
             val execute = restApi.book(
                 authorization = BEARER,
                 bookId = bookId,
@@ -59,14 +59,14 @@ class RemoteDataSourceImpl(
             ).execute()
             val code = execute.code()
             val body = execute.body() ?: listOf()
-            Log.d(TAG, "getBooks: code - $code, body - $body")
+            Log.d(TAG, "getBook: code - $code, body - $body")
             if (code == 200) {
                 emit(ResponseState.Success(body))
             } else {
                 emit(ResponseState.Failure(IOException(RESPONSE_CODE)))
             }
         } catch (e: IOException) {
-            Log.e(TAG, "getBooks: error - ${e.message}")
+            Log.e(TAG, "getBook: error - ${e.message}")
             emit(ResponseState.Failure(e))
         }
     }

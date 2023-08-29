@@ -1,7 +1,5 @@
 package com.m21droid.booknet.presentation.book.states
 
-import com.m21droid.booknet.domain.models.PageModel
-
 sealed class BookState {
 
     object Loading : BookState()
@@ -10,6 +8,6 @@ sealed class BookState {
 
     object Empty : BookState()
 
-    data class Display(val pages: List<PageModel>) : BookState()
+    data class Display(val pages: List<String>) : BookState()
 
 }
