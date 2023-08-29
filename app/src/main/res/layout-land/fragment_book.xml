@@ -7,16 +7,16 @@
 
     <LinearLayout
         android:id="@+id/linearLayout_book"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/padding"
-        android:orientation="horizontal" />
+        android:layout_width="72dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/padding"
+        android:orientation="vertical" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout_book">
+        android:layout_toStartOf="@+id/linearLayout_book">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager_book"

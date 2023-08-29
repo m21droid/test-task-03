@@ -116,6 +116,9 @@ class MainViewModel @Inject constructor(
     private fun postPages() {
         viewModelScope.launch {
             if (source.isEmpty()) {
+                if (liveDataBook.value !is BookState.Loading) {
+                    liveDataBook.postValue(BookState.Empty)
+                }
                 return@launch
             }
             liveDataBook.postValue(BookState.Loading)
@@ -133,10 +136,13 @@ class MainViewModel @Inject constructor(
                 line += lines
             }
             endIndex = layout.getLineEnd(layout.lineCount - 1)
-            list.add(source.substring(startIndex, endIndex))
-            if (list.isNotEmpty()) {
-                liveDataBook.postValue(BookState.Display(list))
+            val text = source.substring(startIndex, endIndex)
+            if (text.isNotEmpty()) {
+                list.add(text)
             }
+
+            val state = if (list.isEmpty()) BookState.Empty else BookState.Display(list)
+            liveDataBook.postValue(state)
         }
     }
 

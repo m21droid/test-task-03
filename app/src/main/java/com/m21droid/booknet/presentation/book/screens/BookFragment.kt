@@ -1,10 +1,13 @@
 package com.m21droid.booknet.presentation.book.screens
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_SP
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,29 +30,35 @@ class BookFragment : Fragment(), Observer<BookState> {
     private lateinit var binding: FragmentBookBinding
 
     private val listSizeFont = arrayOf(14, 18, 22, 24, 32)
+    private val listTextView = mutableListOf<TextView>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentBookBinding.inflate(inflater)
-        binding.apply {
-            listOf(
-                textViewBookSize0,
-                textViewBookSize1,
-                textViewBookSize2,
-                textViewBookSize3,
-                textViewBookSize4
-            ).forEachIndexed { index, textView ->
-                textView.text = listSizeFont[index].toString()
-                textView.setOnClickListener {
-                    viewModel.indexSizeFont = index
-                    setSizeFont()
+        binding = FragmentBookBinding.inflate(inflater).apply {
+            listSizeFont.forEachIndexed { index, font ->
+                val textView = TextView(context).apply {
+                    layoutParams =
+                        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.0f)
+                        } else {
+                            LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f)
+                        }
+                    text = font.toString()
+                    setTextSize(COMPLEX_UNIT_SP, font.toFloat())
+                    gravity = Gravity.CENTER
+                    setOnClickListener {
+                        viewModel.indexSizeFont = index
+                        setSizeFont()
+                    }
                 }
+                linearLayoutBook.addView(textView)
+                listTextView.add(textView)
             }
-        }
-        binding.viewPagerBook.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
-            viewModel.setSizesScreen(v.width, v.height)
+            viewPagerBook.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
+                viewModel.setSizesScreen(v.width, v.height)
+            }
         }
         setSizeFont()
         return binding.root
@@ -68,12 +77,14 @@ class BookFragment : Fragment(), Observer<BookState> {
             when (value) {
                 BookState.Loading -> {
                     viewPagerBook.gone()
+                    linearLayoutBook.gone()
                     textViewBookError.gone()
                     progressBarBook.visible()
                 }
 
                 BookState.Failure -> {
                     viewPagerBook.gone()
+                    linearLayoutBook.gone()
                     textViewBookError.visible()
                     progressBarBook.gone()
                     textViewBookError.text = getString(R.string.error)
@@ -81,6 +92,7 @@ class BookFragment : Fragment(), Observer<BookState> {
 
                 BookState.Empty -> {
                     viewPagerBook.gone()
+                    linearLayoutBook.gone()
                     textViewBookError.visible()
                     progressBarBook.gone()
                     textViewBookError.text = getString(R.string.empty_page)
@@ -96,6 +108,7 @@ class BookFragment : Fragment(), Observer<BookState> {
                     }
                     binding.viewPagerBook.adapter = ViewPagerAdapter(pages)
                     viewPagerBook.visible()
+                    linearLayoutBook.visible()
                     textViewBookError.gone()
                     progressBarBook.gone()
                 }
@@ -107,6 +120,11 @@ class BookFragment : Fragment(), Observer<BookState> {
         TextView(context).apply {
             setTextSize(COMPLEX_UNIT_SP, listSizeFont[viewModel.indexSizeFont].toFloat())
             viewModel.setSizeFont(lineHeight, paint)
+        }
+        listTextView.forEachIndexed { index, textView ->
+            val resId =
+                if (index == viewModel.indexSizeFont) R.drawable.background_font else R.drawable.background_item
+            textView.setBackgroundResource(resId)
         }
     }
 
